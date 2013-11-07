@@ -20,6 +20,7 @@
 
 #include "laplace_3d_periodic_single_layer_boundary_operator.hpp"
 #include "laplace_3d_periodic_synthetic_boundary_operator_builder.hpp"
+#include "fiber/laplace_3d_periodic_single_layer_potential_kernel_functor.hpp"
 
 #include "bempp/assembly/context.hpp"
 #include "bempp/assembly/general_elementary_singular_integral_operator_imp.hpp"
@@ -28,7 +29,6 @@
 
 #include "bempp/fiber/explicit_instantiation.hpp"
 
-#include "bempp/fiber/laplace_3d_periodic_single_layer_potential_kernel_functor.hpp"
 #include "bempp/fiber/scalar_function_value_functor.hpp"
 #include "bempp/fiber/simple_test_scalar_kernel_trial_integrand_functor.hpp"
 

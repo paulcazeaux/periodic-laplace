@@ -20,7 +20,7 @@
 
 
 import bempp.core_periodic_laplace as core_periodic_laplace
-from bempp.lib import _constructOperator
+from bempp.lib import _constructOperator, _constructLaplacePotentialOperator
 
 # determine the type used to represent the values of the basis functions into
 # which functions acted upon by the operator will be expanded, and the type used

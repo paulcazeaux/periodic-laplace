@@ -9,6 +9,7 @@ include_directories("${BEMPP_INCLUDE_DIR}")
 include_directories("${BEMPP_INCLUDE_DIR}/bempp")
 include_directories("${BEMPP_INCLUDE_DIR}/bempp/swig")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
+include_directories("${CMAKE_SOURCE_DIR}/lib")
 
 # Specify the source files and name of the new module
 set_source_files_properties(core_periodic_laplace.i PROPERTIES CPLUSPLUS ON)

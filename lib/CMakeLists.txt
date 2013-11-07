@@ -3,6 +3,7 @@
 file(GLOB_RECURSE LIB_SOURCES *.cpp)
 file(GLOB_RECURSE LIB_HEADERS *.hpp)
 include_directories("${BEMPP_INCLUDE_DIR}")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 
 add_library(periodic_laplace SHARED
   ${LIB_SOURCES}

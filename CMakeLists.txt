@@ -22,6 +22,8 @@ if (NOT CMAKE_BUILD_TYPE)
 endif ()
 
 # set(CMAKE_CXX_FLAGS "-Wall -Wnon-virtual-dtor -Wno-sign-compare")
+# SET(GCC_COMPILE_FLAGS " -DNDEBUG -DBOOST_UBLAS_NDEBUG -O3")
+# SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${GCC_COMPILE_FLAGS}")
 
 # Main library
 add_subdirectory(lib)
