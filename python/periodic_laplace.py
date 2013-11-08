@@ -20,7 +20,39 @@
 
 
 import bempp.core_periodic_laplace as core_periodic_laplace
-from bempp.lib import _constructOperator, _constructLaplacePotentialOperator
+from bempp.lib import _constructObjectTemplatedOnBasisAndResult
+
+def _constructOperator(className, context, domain, range, dualToRange, label=None):
+    # determine basis function type
+    basisFunctionType = domain.basisFunctionType()
+    if (basisFunctionType != range.basisFunctionType() or
+            basisFunctionType != dualToRange.basisFunctionType()):
+        raise TypeError("BasisFunctionType of all spaces must be the same")
+
+    # determine result type
+    resultType = context.resultType()
+
+    if label:
+        result = _constructObjectTemplatedOnBasisAndResult(
+            core_periodic_laplace, className, basisFunctionType, resultType,
+            context, domain, range, dualToRange, label)
+    else:
+        result = _constructObjectTemplatedOnBasisAndResult(
+            core_periodic_laplace, className, basisFunctionType, resultType,
+            context, domain, range, dualToRange)
+    result._context = context
+    result._domain = domain
+    result._range = range
+    result._dualToRange = dualToRange
+    return result
+
+def _constructLaplacePotentialOperator(className, context):
+    basisFunctionType = context.basisFunctionType()
+    resultType = context.resultType()
+    result = _constructObjectTemplatedOnBasisAndResult(
+        core_periodic_laplace, className, basisFunctionType, resultType)
+    result._context = context
+    return result
 
 # determine the type used to represent the values of the basis functions into
 # which functions acted upon by the operator will be expanded, and the type used

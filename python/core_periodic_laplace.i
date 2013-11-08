@@ -41,5 +41,5 @@
 %module core_periodic_laplace
 
 
-// %include "assembly/laplace_3d_periodic_potential_operators.i"
+%include "assembly/laplace_3d_periodic_potential_operators.i"
 %include "assembly/laplace_3d_periodic_operators.i"

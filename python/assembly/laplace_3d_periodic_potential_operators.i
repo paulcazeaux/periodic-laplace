@@ -5,15 +5,26 @@
 %}
 
 
-%feature("compactdefaultargs") Laplace3dPeriodicSingleLayerPotentialOperator;
-%feature("compactdefaultargs") Laplace3dPeriodicDoubleLayerPotentialOperator;
+%feature("compactdefaultargs") laplace3dPeriodicSingleLayerPotentialOperator;
+%feature("compactdefaultargs") laplace3dPeriodicDoubleLayerPotentialOperator;
 
-#define shared_ptr boost::shared_ptr
-%include "assembly/laplace_3d_periodic_single_layer_potential_operator.hpp"
-%include "assembly/laplace_3d_periodic_double_layer_potential_operator.hpp"
-#undef shared_ptr
-namespace Bempp
+%inline %{
+
+template <typename BasisFunctionType, typename ResultType>
+boost::shared_ptr<Bempp::PotentialOperator<BasisFunctionType, ResultType> >
+laplace3dPeriodicSingleLayerPotentialOperator()
 {
-BEMPP_INSTANTIATE_SYMBOL_TEMPLATED_ON_BASIS_AND_RESULT(Laplace3dPeriodicSingleLayerPotentialOperator);
-BEMPP_INSTANTIATE_SYMBOL_TEMPLATED_ON_BASIS_AND_RESULT(Laplace3dPeriodicDoubleLayerPotentialOperator);
-} // namespace Bempp
+    typedef Bempp::Laplace3dPeriodicSingleLayerPotentialOperator<BasisFunctionType, ResultType> Type;
+    return boost::shared_ptr<Type>(new Type);
+}
+
+template <typename BasisFunctionType, typename ResultType>
+boost::shared_ptr<Bempp::PotentialOperator<BasisFunctionType, ResultType> >
+laplace3dPeriodicDoubleLayerPotentialOperator()
+{
+    typedef Bempp::Laplace3dPeriodicDoubleLayerPotentialOperator<BasisFunctionType, ResultType> Type;
+    return boost::shared_ptr<Type>(new Type);
+}
+%}
+BEMPP_INSTANTIATE_SYMBOL_TEMPLATED_ON_BASIS_AND_RESULT(laplace3dPeriodicSingleLayerPotentialOperator);
+BEMPP_INSTANTIATE_SYMBOL_TEMPLATED_ON_BASIS_AND_RESULT(laplace3dPeriodicDoubleLayerPotentialOperator);
