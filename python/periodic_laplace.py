@@ -192,3 +192,60 @@ def createLaplace3dPeriodicDoubleLayerPotentialOperator(context):
         """
     return _constructLaplacePotentialOperator(
                                               "laplace3dPeriodicDoubleLayerPotentialOperator", context)
+
+    def Integrate(
+        gridFunction, testFunction, quadStrategy, evaluationOptions,
+        surfaceNormalDependent=False):
+    """
+    Calculate the integral of a product between a grid function and a test function
+    defined as a Python callable.
+
+    *Parameters:*
+       - gridFunction (GridFunction)
+            A grid function.
+       - testFunction (a Python callable object)
+            A Python callable object whose values on 'gridFunction.grid()' will
+            be multiplied by those of the grid function. If
+            'surfaceNormalDependent' is set to False (default), 'testFunction'
+            will be passed a single argument containing a 1D array of the
+            coordinates of a point lying on the grid 'gridFunction.grid()'. If
+            'surfaceNormalDependent' is set to True, the function will be passed
+            one more argument, a 1D array containing the components of the unit
+            vector normal to 'gridFunction.grid()' at the point given in the
+            first argument. In both cases 'testFunction' should return its
+            value at the given point, in the form of a scalar or a 1D array with
+            dimension equal to 'space.codomainDimension()'.
+       - quadStrategy (QuadratureStrategy)
+            Quadrature stategy to be used to evaluate integrals involved in the
+            boundary integral.
+       - evaluationOptions (EvaluationOptions)
+            Additional options controlling function evaluation.
+       - surfaceNormalDependent (bool)
+            Indicates whether 'testFunction' depends on the unit vector
+            normal to the grid or not.
+
+    *Returns* the value of the boundary integralof the product gridFunction * testFunction.
+
+    See the documentation of createGridFunction() for example definitions of
+    Python functions that can be passed to the 'testFunction' argument.
+    """
+    basisFunctionType = checkType(gridFunction.basisFunctionType())
+    resultType = checkType(gridFunction.resultType())
+    if (basisFunctionType != quadStrategy.basisFunctionType() or
+            resultType != quadStrategy.resultType()):
+        raise TypeError("BasisFunctionType and ResultType of gridFunction "
+                        "and testFunction must be the same")
+    if surfaceNormalDependent:
+        dependent = "Dependent"
+    else:
+        dependent = "Independent"
+    functor = _constructObjectTemplatedOnValue(
+        core, "PythonSurfaceNormal%sFunctor" % dependent,
+        resultType, testFunction,
+        gridFunction.space().grid().dimWorld(), # argument dimension
+        gridFunction.space().codomainDimension() # result dimension
+        )
+    return _constructObjectTemplatedOnBasisAndResult(
+        core, "IntegralFromPythonSurfaceNormal%sFunctor" % dependent,
+        basisFunctionType, resultType,
+        gridFunction, functor, quadStrategy, evaluationOptions)
