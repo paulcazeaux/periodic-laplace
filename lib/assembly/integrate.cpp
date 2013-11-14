@@ -214,7 +214,7 @@ makeEvaluator(
 } // namespace
 
 template <typename BasisFunctionType, typename ResultType>
-typename ScalarTraits<BasisFunctionType>::RealType Integrator(
+ResultType Integrate(
         const GridFunction<BasisFunctionType, ResultType>& trialGridFunction,
         const Fiber::Function<ResultType>& testFunction,
         const Fiber::QuadratureStrategy<
@@ -222,73 +222,71 @@ typename ScalarTraits<BasisFunctionType>::RealType Integrator(
         const EvaluationOptions& options)
 {
     // First, construct the evaluator.
+
     typedef Fiber::EvaluatorForIntegralOperators<ResultType> Evaluator;
     std::auto_ptr<Evaluator> evaluator =
         makeEvaluator(
             trialGridFunction, testFunction, quadStrategy, options);
 
-    typedef typename Fiber::ScalarTraits<BasisFunctionType>::RealType MagnitudeType;
-    typedef MagnitudeType CoordinateType;
+    typedef typename Fiber::ScalarTraits<BasisFunctionType>::RealType CoordinateType;
     arma::Mat<CoordinateType> evaluationPoints(1, 1);
     evaluationPoints(0, 0) = 0.;
     arma::Mat<ResultType> resultMatrix;
+
     evaluator->evaluate(Evaluator::FAR_FIELD, evaluationPoints, resultMatrix);
 
     ResultType result = resultMatrix(0, 0);
-
-    return sqrt(realPart(result));
+    return result;
 }
 
 template <typename BasisFunctionType, typename ResultType>
-void Integrate(
+void Integrator(
         const GridFunction<BasisFunctionType, ResultType>& trialGridFunction,
         const Fiber::Function<ResultType>& testFunction,
         const Fiber::QuadratureStrategy<
             BasisFunctionType, ResultType, GeometryFactory>& quadStrategy,
         const EvaluationOptions& options,
-        typename ScalarTraits<BasisFunctionType>::RealType& integral)
+        ResultType& integral)
 {
-    typedef typename Fiber::ScalarTraits<BasisFunctionType>::RealType
-        MagnitudeType;
-    integral = Integrator(trialGridFunction, testFunction,
+    integral = Integrate(trialGridFunction, testFunction,
                                                 quadStrategy, options);
 }
 
 template <typename BasisFunctionType, typename ResultType>
-void Integrate(
+void Integrator(
         const GridFunction<BasisFunctionType, ResultType>& trialGridFunction,
         const Fiber::Function<ResultType>& testFunction,
         const Fiber::QuadratureStrategy<
             BasisFunctionType, ResultType, GeometryFactory>& quadStrategy,
-        typename ScalarTraits<BasisFunctionType>::RealType& integral)
+        ResultType& integral)
 {
-    Integrate(trialGridFunction, testFunction, quadStrategy,
+    Integrator(trialGridFunction, testFunction, quadStrategy,
                     EvaluationOptions(), integral);
 }
 
 #define INSTANTIATE_FUNCTION(BASIS, RESULT) \
     template \
-    ScalarTraits<BASIS>::RealType Integrator( \
+    RESULT Integrate( \
             const GridFunction<BASIS, RESULT>& trialGridFunction, \
             const Fiber::Function<RESULT>& testFunction, \
             const Fiber::QuadratureStrategy< \
                 BASIS, RESULT, GeometryFactory>& quadStrategy, \
             const EvaluationOptions& options); \
     template \
-    void Integrate( \
+    void Integrator( \
             const GridFunction<BASIS, RESULT>& trialGridFunction, \
             const Fiber::Function<RESULT>& testFunction, \
             const Fiber::QuadratureStrategy< \
                 BASIS, RESULT, GeometryFactory>& quadStrategy, \
             const EvaluationOptions& options, \
-            ScalarTraits<BASIS>::RealType& integral); \
+            RESULT& integral); \
     template \
-    void Integrate( \
+    void Integrator( \
             const GridFunction<BASIS, RESULT>& trialGridFunction, \
             const Fiber::Function<RESULT>& testFunction, \
             const Fiber::QuadratureStrategy< \
                 BASIS, RESULT, GeometryFactory>& quadStrategy, \
-            ScalarTraits<BASIS>::RealType& integral)
+            RESULT& integral)
 
 FIBER_ITERATE_OVER_BASIS_AND_RESULT_TYPES(INSTANTIATE_FUNCTION);
 

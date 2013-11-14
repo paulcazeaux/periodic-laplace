@@ -19,27 +19,62 @@
 // THE SOFTWARE.
 
 
-%define BEMPP_INSTANTIATE_SYMBOL_TEMPLATED_ON_BASIS_AND_RESULT(CLASS)
-    %template(CLASS ## _float32_float32)
-        CLASS<float, float>;
-    %template(CLASS ## _float32_complex64)
-        CLASS<float, std::complex<float> >;
-    %template(CLASS ## _complex64_complex64)
-        CLASS<std::complex<float>, std::complex<float> >;
-
-    %template(CLASS ## _float64_float64)
-        CLASS<double, double>;
-    %template(CLASS ## _float64_complex128)
-        CLASS<double, std::complex<double> >;
-    %template(CLASS ## _complex128_complex128)
-        CLASS<std::complex<double>, std::complex<double> >
-%enddef // BEMPP_INSTANTIATE_SYMBOL_TEMPLATED_ON_BASIS_AND_RESULT
-
-
-
-
 %module core_periodic_laplace
+%{
+#define SWIG_FILE_WITH_INIT
+#include <dune/common/exceptions.hh>
+#include <complex>
+%}
 
 
-%include "assembly/laplace_3d_periodic_potential_operators.i"
+%include "numpy.i"
+
+// Import docstring macros
+%include "docstrings.i"
+
+// Define commonly used typemaps
+%include "armadillo.i"
+%include "auto_ptr.i"
+%include "exception.i"
+%include "bempp_shared_ptr.i"
+%include "std_string.i"
+%include "std_complex.i"
+
+// Useful macros
+%include "macros.i"
+
+
+// Import macros for explicit template instantiations
+%include "template_instantiations_basis_result.i"
+%include "template_instantiations_value.i"
+
+
+
+// End of auto_ptr typemaps
+
+
+// Make commonly used typedefs known to Swig
+%inline %{
+    namespace Bempp
+    {
+        typedef double ctype;
+    }
+%}
+%include "grid/geometry_type.hpp"
+
+// Wrap Bempp components
+
+// Common
+%include "common/scalar_traits.i"
+// Grid
+%include "grid/geometry.i"
+
+
+// Assembly
+%include "assembly/python_surface_normal_dependent_functor.i"
+%include "assembly/python_surface_normal_independent_functor.i"
+%include "bempp.swg"
+
+%include "assembly/integrate.i"
 %include "assembly/laplace_3d_periodic_operators.i"
+%include "assembly/laplace_3d_periodic_potential_operators.i"

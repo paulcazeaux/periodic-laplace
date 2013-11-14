@@ -18,9 +18,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-
+import bempp.core as core
 import bempp.core_periodic_laplace as core_periodic_laplace
-from bempp.lib import _constructObjectTemplatedOnBasisAndResult
+from bempp.lib import _constructObjectTemplatedOnBasisAndResult, _constructObjectTemplatedOnValue, checkType
 
 def _constructOperator(className, context, domain, range, dualToRange, label=None):
     # determine basis function type
@@ -193,7 +193,7 @@ def createLaplace3dPeriodicDoubleLayerPotentialOperator(context):
     return _constructLaplacePotentialOperator(
                                               "laplace3dPeriodicDoubleLayerPotentialOperator", context)
 
-    def Integrate(
+def Integrate(
         gridFunction, testFunction, quadStrategy, evaluationOptions,
         surfaceNormalDependent=False):
     """
@@ -246,6 +246,6 @@ def createLaplace3dPeriodicDoubleLayerPotentialOperator(context):
         gridFunction.space().codomainDimension() # result dimension
         )
     return _constructObjectTemplatedOnBasisAndResult(
-        core, "IntegralFromPythonSurfaceNormal%sFunctor" % dependent,
+        core_periodic_laplace, "IntegrateFromPythonSurfaceNormal%sFunctor" % dependent,
         basisFunctionType, resultType,
         gridFunction, functor, quadStrategy, evaluationOptions)

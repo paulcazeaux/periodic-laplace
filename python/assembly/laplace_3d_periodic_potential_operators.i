@@ -1,5 +1,4 @@
 %{
-#define SWIG_FILE_WITH_INIT
 #include "assembly/laplace_3d_periodic_single_layer_potential_operator.hpp"
 #include "assembly/laplace_3d_periodic_double_layer_potential_operator.hpp"
 %}

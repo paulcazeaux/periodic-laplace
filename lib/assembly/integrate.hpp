@@ -63,13 +63,37 @@ template <typename BasisFunctionType, typename ResultType> class GridFunction;
  */
 
 template <typename BasisFunctionType, typename ResultType>
-void Integrate(
+ResultType Integrate(
+        const GridFunction<BasisFunctionType, ResultType>& trialGridFunction,
+        const Fiber::Function<ResultType>& testFunction,
+        const Fiber::QuadratureStrategy<
+            BasisFunctionType, ResultType, GeometryFactory>& quadStrategy,
+        const EvaluationOptions& options);
+
+/** \relates GridFunction
+ *  \brief Calculate the boundary integral of a GridFunction.
+ *
+ *  This function can be used to estimate the homogenized coefficients from 
+ *  a numerical solution to the corrector problem \p trialGridFunction.
+ *
+ *  The quadrature strategy \p quadStrategy is used to evaluate any
+ *  necessary integrals; the \p options object controls the level of
+ *  parallelism.
+ *
+ *  \note If you use the numerical quadrature strategy, you may need to increase
+ *  the quadrature order for regular integrals on single elements by at least 2
+ *  to ensure that this function produces results with sufficient accuracy.
+ */
+
+
+template <typename BasisFunctionType, typename ResultType>
+void Integrator(
         const GridFunction<BasisFunctionType, ResultType>& trialGridFunction,
         const Fiber::Function<ResultType>& testGridFunction,
         const Fiber::QuadratureStrategy<
             BasisFunctionType, ResultType, GeometryFactory>& quadStrategy,
         const EvaluationOptions& options,
-        typename ScalarTraits<BasisFunctionType>::RealType& integral);
+        ResultType& integral);
 
 /** \relates GridFunction
  *  \brief Calculate the boundary integral of a GridFunction.
@@ -79,12 +103,12 @@ void Integrate(
  *  <tt>EvaluationOptions()</tt>. */
 
 template <typename BasisFunctionType, typename ResultType>
-void Integrate(
+void Integrator(
         const GridFunction<BasisFunctionType, ResultType>& trialGridFunction,
         const Fiber::Function<ResultType>& testGridFunction,
         const Fiber::QuadratureStrategy<
             BasisFunctionType, ResultType, GeometryFactory>& quadStrategy,
-        typename ScalarTraits<BasisFunctionType>::RealType& integral);
+        ResultType& integral);
 
 } // namespace Bempp
 

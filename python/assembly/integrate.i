@@ -1,6 +1,7 @@
 %{
-#define SWIG_FILE_WITH_INIT
 #include "assembly/integrate.hpp"
+#include "assembly/surface_normal_dependent_function.hpp"
+#include "assembly/surface_normal_independent_function.hpp"
 %}
 
 %inline %{
@@ -9,8 +10,7 @@ namespace Bempp
 {
 
 template <typename BasisFunctionType, typename ResultType>
-typename ScalarTraits<BasisFunctionType>::RealType
-IntegrateFromPythonSurfaceNormalIndependentFunctor(
+ResultType IntegrateFromPythonSurfaceNormalIndependentFunctor(
         const GridFunction<BasisFunctionType, ResultType>& gridFunction,
         const PythonSurfaceNormalIndependentFunctor<ResultType>& functor,
         const Fiber::QuadratureStrategy<
@@ -22,10 +22,8 @@ IntegrateFromPythonSurfaceNormalIndependentFunctor(
                               quadStrategy,
                               options);
 }
-
 template <typename BasisFunctionType, typename ResultType>
-typename ScalarTraits<BasisFunctionType>::RealType
-IntegrateFromPythonSurfaceNormalDependentFunctor(
+ResultType IntegrateFromPythonSurfaceNormalDependentFunctor(
         const GridFunction<BasisFunctionType, ResultType>& gridFunction,
         const PythonSurfaceNormalDependentFunctor<ResultType>& functor,
         const Fiber::QuadratureStrategy<
